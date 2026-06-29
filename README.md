@@ -2,6 +2,12 @@
 
 Synthetic demo REST API for user accounts, deposits, withdrawals, transfers, and transaction history. Built with Go and PostgreSQL.
 
+[![Tests](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml/badge.svg)](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml)
+
+## Screenshot
+
+![API overview](docs/screenshots/api-overview.png)
+
 ## Stack
 
 - **Go 1.22** — HTTP API with `net/http` ServeMux

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Golang Transaction API</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;background:#0f172a;color:#e2e8f0}
+h1{color:#38bdf8} pre{background:#1e293b;padding:1rem;border-radius:8px;overflow:auto;font-size:14px}
+.endpoint{color:#4ade80}
+</style></head>
+<body>
+<h1>golang-transaction-api</h1>
+<p>Synthetic wallet REST API — deposits, withdrawals, transfers, idempotency keys.</p>
+<pre><span class="endpoint">GET</span>  /health
+<span class="endpoint">POST</span> /users
+<span class="endpoint">POST</span> /users/{id}/accounts
+<span class="endpoint">POST</span> /accounts/{id}/deposit     <em>Idempotency-Key header</em>
+<span class="endpoint">POST</span> /accounts/{id}/withdraw
+<span class="endpoint">POST</span> /accounts/{id}/transfer
+<span class="endpoint">GET</span>  /accounts/{id}/transactions
+
+$ curl -X POST localhost:8080/accounts/ACCT/deposit \
+  -H 'Idempotency-Key: demo-1' \
+  -d '{"amount":2500,"reference":"payroll"}'
+</pre>
+</body></html>
