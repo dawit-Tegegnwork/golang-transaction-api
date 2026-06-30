@@ -4,6 +4,54 @@ Synthetic demo REST API for user accounts, deposits, withdrawals, transfers, and
 
 [![Tests](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml/badge.svg)](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml)
 
+This is a **production-style portfolio project** using **synthetic financial demo data**. It demonstrates transaction-safe APIs, idempotency, and PostgreSQL patterns — not a live banking product.
+
+## Live Demo
+
+| Channel | URL |
+|---------|-----|
+| **Cloud live demo** | Coming soon — deploy via Docker on Render/Railway (see `.env.example`) |
+| **Local** | `http://127.0.0.1:8080` after `docker compose up --build` |
+
+## Quick Test in 3 Minutes
+
+```bash
+docker compose up --build
+curl http://localhost:8080/health
+curl http://localhost:8080/audit?limit=5
+```
+
+1. Open http://localhost:8080/ — landing page  
+2. Confirm health and audit log responses  
+3. Run deposit/transfer curl examples from README using seeded account ID  
+
+## Production-Style Features
+
+- Row-level locking and idempotency keys  
+- Append-only audit log (`GET /audit`)  
+- `/health` with database ping  
+- `/` landing page  
+- Auto-seed demo funded account  
+- Docker Compose + GitHub Actions CI  
+
+## Health Check
+
+```bash
+curl http://localhost:8080/health
+# {"status":"ok"}
+```
+
+## Synthetic Data Notice
+
+All users, accounts, and transactions are **synthetic demo ledger entries** for portfolio evaluation only.
+
+## What Recruiters Can Evaluate
+
+- Go HTTP API design  
+- Transaction safety and idempotency  
+- PostgreSQL persistence patterns  
+- Error handling and auditability  
+
 ## Demo scenario (3–5 minutes)
 
 1. `docker compose up --build` — demo user + funded account auto-seed

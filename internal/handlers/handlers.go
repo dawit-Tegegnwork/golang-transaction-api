@@ -45,16 +45,22 @@ func (a *API) landing(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Golang Transaction API</title>
-<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6}
-code{background:#f3f4f6;padding:.15rem .35rem;border-radius:4px}</style></head>
+<html lang="en"><head><meta charset="utf-8"><title>Golang Transaction API</title>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#0f172a}
+.notice{background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;padding:1rem;border-radius:8px;margin:1rem 0}
+a{color:#0369a1;font-weight:600;margin-right:1rem} code{background:#f3f4f6;padding:.1rem .35rem;border-radius:4px}</style></head>
 <body>
 <h1>Golang Transaction API</h1>
-<p>Portfolio reference implementation for wallet-style transfers with idempotency keys and PostgreSQL.</p>
-<p><a href="/health">Health check</a> · Synthetic demo data only.</p>
-<h2>Quick curl</h2>
-<pre><code>curl http://localhost:8080/health
-curl http://localhost:8080/audit?limit=10</code></pre>
+<p>Production-style portfolio REST API — wallet transfers, idempotency keys, PostgreSQL, audit log.</p>
+<div class="notice"><strong>Synthetic data only.</strong> Demo accounts and ledger entries — not a live financial product.</div>
+<p><a href="/health">Health check</a><a href="/audit?limit=10">Audit log</a>
+<a href="https://github.com/dawit-Tegegnwork/golang-transaction-api">GitHub</a></p>
+<h2>Quick test (3 minutes)</h2>
+<ol>
+<li><code>curl http://localhost:8080/health</code></li>
+<li><code>curl http://localhost:8080/audit?limit=5</code> — see seeded demo deposit</li>
+<li>Use account ID from audit log in README deposit/transfer examples</li>
+</ol>
 </body></html>`))
 }
 
