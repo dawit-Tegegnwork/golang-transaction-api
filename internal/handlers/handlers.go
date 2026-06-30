@@ -45,23 +45,34 @@ func (a *API) landing(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Golang Transaction API</title>
-<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#0f172a}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Golang Transaction API</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#FBF7F0;color:#0E2A3B;line-height:1.6}
+main{max-width:820px;margin:0 auto;padding:2rem 1.25rem}
 .notice{background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;padding:1rem;border-radius:8px;margin:1rem 0}
-a{color:#0369a1;font-weight:600;margin-right:1rem} code{background:#f3f4f6;padding:.1rem .35rem;border-radius:4px}</style></head>
-<body>
+.card{background:#fff;border:1px solid #E8DFD0;border-radius:12px;padding:1rem;margin:1rem 0}
+a{color:#0E9E8E;font-weight:600;margin-right:1rem} code{background:#F4ECDE;padding:.1rem .35rem;border-radius:4px}
+.endpoint{font-family:monospace;font-size:0.85rem;margin:0.35rem 0}
+.get{color:#1FA85B}.post{color:#0E9E8E}
+</style></head><body><main>
 <h1>Golang Transaction API</h1>
-<p>Production-style portfolio REST API — wallet transfers, idempotency keys, PostgreSQL, audit log.</p>
-<div class="notice"><strong>Synthetic data only.</strong> Demo accounts and ledger entries — not a live financial product.</div>
+<p>Wallet-style REST API — idempotent transfers, PostgreSQL ledger, append-only audit log.</p>
+<div class="notice"><strong>Synthetic data only.</strong> Demo accounts seeded on startup — not a live financial product.</div>
+<div class="card">
+<p class="endpoint"><span class="get">GET</span> /health</p>
+<p class="endpoint"><span class="post">POST</span> /accounts/{id}/deposit</p>
+<p class="endpoint"><span class="post">POST</span> /accounts/{id}/transfer <em>(Idempotency-Key header)</em></p>
+<p class="endpoint"><span class="get">GET</span> /audit?limit=10</p>
+</div>
 <p><a href="/health">Health check</a><a href="/audit?limit=10">Audit log</a>
 <a href="https://github.com/dawit-Tegegnwork/golang-transaction-api">GitHub</a></p>
-<h2>Quick test (3 minutes)</h2>
+<h2>Quick test</h2>
 <ol>
-<li><code>curl http://localhost:8080/health</code></li>
-<li><code>curl http://localhost:8080/audit?limit=5</code> — see seeded demo deposit</li>
-<li>Use account ID from audit log in README deposit/transfer examples</li>
+<li><code>curl /health</code></li>
+<li><code>curl /audit?limit=5</code> — see seeded demo deposit</li>
+<li>Use account ID from audit in README transfer examples</li>
 </ol>
-</body></html>`))
+</main></body></html>`))
 }
 
 func (a *API) listAudit(w http.ResponseWriter, r *http.Request) {

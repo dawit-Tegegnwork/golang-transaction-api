@@ -10,18 +10,19 @@ This is a **production-style portfolio project** using **synthetic financial dem
 
 | Channel | URL |
 |---------|-----|
-| **Cloud live demo** | Coming soon — deploy via Docker on Render/Railway (see `.env.example`) |
-| **Local** | `http://127.0.0.1:8080` after `docker compose up --build` |
+| **Cloud live demo** | https://golang-transaction-api.onrender.com/ (free tier — cold start ~30s) |
+| **Audit log** | https://golang-transaction-api.onrender.com/audit?limit=10 |
+| **Local** | `http://127.0.0.1:8082` after `docker compose up --build` |
 
 ## Quick Test in 3 Minutes
 
 ```bash
 docker compose up --build
-curl http://localhost:8080/health
-curl http://localhost:8080/audit?limit=5
+curl http://localhost:8082/health
+curl http://localhost:8082/audit?limit=5
 ```
 
-1. Open http://localhost:8080/ — landing page  
+1. Open http://localhost:8082/ — landing page  
 2. Confirm health and audit log responses  
 3. Run deposit/transfer curl examples from README using seeded account ID  
 
@@ -37,7 +38,7 @@ curl http://localhost:8080/audit?limit=5
 ## Health Check
 
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:8082/health
 # {"status":"ok"}
 ```
 
@@ -61,7 +62,7 @@ All users, accounts, and transactions are **synthetic demo ledger entries** for 
 
 ## Screenshot
 
-![API overview](docs/screenshots/api-overview.png)
+![Landing page](docs/screenshots/landing.png)
 
 ## Stack
 

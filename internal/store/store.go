@@ -40,7 +40,11 @@ func (s *Store) placeholder(n int) string {
 }
 
 func (s *Store) Migrate(ctx context.Context) error {
-	schema := `
+	blobType := "BLOB"
+	if s.postgres {
+		blobType = "BYTEA"
+	}
+	schema := fmt.Sprintf(`
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
@@ -71,7 +75,7 @@ CREATE TABLE IF NOT EXISTS idempotency_keys (
     key TEXT NOT NULL,
     path TEXT NOT NULL,
     status_code INTEGER NOT NULL,
-    response_body BLOB NOT NULL,
+    response_body %s NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (key, path)
 );
@@ -88,7 +92,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
 CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON transactions(account_id);
 CREATE INDEX IF NOT EXISTS idx_accounts_user_id ON accounts(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON audit_log(created_at);
-`
+`, blobType)
 	_, err := s.db.ExecContext(ctx, schema)
 	return err
 }

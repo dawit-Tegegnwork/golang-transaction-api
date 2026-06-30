@@ -16,6 +16,9 @@ import (
 func main() {
 	dsn := env("DATABASE_URL", "postgres://txn:txn@localhost:5432/txn?sslmode=disable")
 	addr := env("HTTP_ADDR", ":8080")
+	if port := os.Getenv("PORT"); port != "" {
+		addr = ":" + port
+	}
 
 	db, err := store.OpenPostgres(dsn)
 	if err != nil {
