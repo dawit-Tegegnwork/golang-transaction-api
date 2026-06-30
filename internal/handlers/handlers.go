@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/dawit/golang-transaction-api/internal/models"
@@ -25,7 +27,9 @@ func NewAPI(s *store.Store) *API {
 
 func (a *API) Routes() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /", a.landing)
 	mux.HandleFunc("GET /health", a.health)
+	mux.HandleFunc("GET /audit", a.listAudit)
 	mux.HandleFunc("POST /users", a.createUser)
 	mux.HandleFunc("GET /users/{id}", a.getUser)
 	mux.HandleFunc("POST /users/{id}/accounts", a.createAccount)
@@ -35,6 +39,39 @@ func (a *API) Routes() http.Handler {
 	mux.HandleFunc("POST /accounts/{id}/transfer", a.transfer)
 	mux.HandleFunc("GET /accounts/{id}/transactions", a.listTransactions)
 	return mux
+}
+
+func (a *API) landing(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(`<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Golang Transaction API</title>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.6}
+code{background:#f3f4f6;padding:.15rem .35rem;border-radius:4px}</style></head>
+<body>
+<h1>Golang Transaction API</h1>
+<p>Portfolio reference implementation for wallet-style transfers with idempotency keys and PostgreSQL.</p>
+<p><a href="/health">Health check</a> · Synthetic demo data only.</p>
+<h2>Quick curl</h2>
+<pre><code>curl http://localhost:8080/health
+curl http://localhost:8080/audit?limit=10</code></pre>
+</body></html>`))
+}
+
+func (a *API) listAudit(w http.ResponseWriter, r *http.Request) {
+	limit := 50
+	if raw := r.URL.Query().Get("limit"); raw != "" {
+		if n, err := strconv.Atoi(raw); err == nil && n > 0 {
+			limit = n
+		}
+	}
+	entries, err := a.Store.ListAudit(r.Context(), limit)
+	if err != nil {
+		log.Printf("list audit: %v", err)
+		writeError(w, http.StatusInternalServerError, "could not load audit log")
+		return
+	}
+	writeJSON(w, http.StatusOK, entries)
 }
 
 func (a *API) health(w http.ResponseWriter, r *http.Request) {
@@ -218,7 +255,13 @@ func writeError(w http.ResponseWriter, status int, msg string) {
 }
 
 func handleStoreError(w http.ResponseWriter, err error) {
-	writeError(w, storeErrorStatus(err), err.Error())
+	status := storeErrorStatus(err)
+	msg := err.Error()
+	if status == http.StatusInternalServerError {
+		log.Printf("internal store error: %v", err)
+		msg = "internal server error"
+	}
+	writeError(w, status, msg)
 }
 
 func storeErrorStatus(err error) int {

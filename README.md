@@ -4,6 +4,13 @@ Synthetic demo REST API for user accounts, deposits, withdrawals, transfers, and
 
 [![Tests](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml/badge.svg)](https://github.com/dawit-Tegegnwork/golang-transaction-api/actions/workflows/test.yml)
 
+## Demo scenario (3–5 minutes)
+
+1. `docker compose up --build` — demo user + funded account auto-seed
+2. `curl http://localhost:8080/health`
+3. `curl http://localhost:8080/audit?limit=10`
+4. Deposit and transfer using README curl examples with seeded account ID from audit log
+
 ## Screenshot
 
 ![API overview](docs/screenshots/api-overview.png)

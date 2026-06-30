@@ -462,3 +462,47 @@ func (s *Store) auditTx(ctx context.Context, tx *sql.Tx, actor, action, resource
 	_, err := tx.ExecContext(ctx, q, uuid.New().String(), actor, action, resource, details, time.Now().UTC())
 	return err
 }
+
+func (s *Store) ListAudit(ctx context.Context, limit int) ([]models.AuditEntry, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	q := fmt.Sprintf(
+		`SELECT id, actor, action, resource, COALESCE(details, ''), created_at FROM audit_log ORDER BY created_at DESC LIMIT %s`,
+		s.placeholder(1),
+	)
+	rows, err := s.db.QueryContext(ctx, q, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var entries []models.AuditEntry
+	for rows.Next() {
+		var e models.AuditEntry
+		if err := rows.Scan(&e.ID, &e.Actor, &e.Action, &e.Resource, &e.Details, &e.CreatedAt); err != nil {
+			return nil, err
+		}
+		entries = append(entries, e)
+	}
+	return entries, rows.Err()
+}
+
+func (s *Store) SeedDemo(ctx context.Context) error {
+	var count int
+	if err := s.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM users`).Scan(&count); err != nil {
+		return err
+	}
+	if count > 0 {
+		return nil
+	}
+	user, err := s.CreateUser(ctx, "demo@portfolio.test", "Demo User")
+	if err != nil {
+		return err
+	}
+	acct, err := s.CreateAccount(ctx, user.ID, "USD")
+	if err != nil {
+		return err
+	}
+	_, err = s.Deposit(ctx, acct.ID, 10000, "demo-seed")
+	return err
+}

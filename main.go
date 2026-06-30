@@ -27,6 +27,9 @@ func main() {
 	if err := st.Migrate(context.Background()); err != nil {
 		log.Fatalf("migrate: %v", err)
 	}
+	if err := st.SeedDemo(context.Background()); err != nil {
+		log.Printf("seed demo: %v", err)
+	}
 
 	api := handlers.NewAPI(st)
 	srv := &http.Server{
